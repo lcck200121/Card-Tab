@@ -6,32 +6,102 @@ const HTML_CONTENT = `<!DOCTYPE html>
 <title>Card Tab</title>
 <style>
 body {
-font-family: Arial, sans-serif;
-// background-color: #f4f4f4;
-background-color: #d8eac4;
+font-family: "Inter", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+background: linear-gradient(135deg, var(--body-bg), var(--body-bg-alt));
 margin: 0;
-padding: 20px;
+padding: 28px 20px 48px;
 display: flex;
 flex-direction: column;
 align-items: center;
-transition: background-color 0.3s ease;
+min-height: 100vh;
+color: var(--text-primary);
+transition: background 0.3s ease, color 0.3s ease;
 }
+
+:root {
+--body-bg: #f2f6ff;
+--body-bg-alt: #e9f1ff;
+--text-primary: #1f2937;
+--text-muted: #6b7280;
+--card-bg: #ffffff;
+--card-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
+--card-shadow-hover: 0 20px 35px rgba(15, 23, 42, 0.2);
+--card-border: rgba(15, 23, 42, 0.08);
+--accent: #3b82f6;
+--accent-strong: #2563eb;
+--danger: #ef4444;
+--control-bg: rgba(255, 255, 255, 0.8);
+--dialog-bg: #ffffff;
+--input-bg: #f8fafc;
+}
+
+body.dark {
+--body-bg: #0f172a;
+--body-bg-alt: #111827;
+--text-primary: #f9fafb;
+--text-muted: #9ca3af;
+--card-bg: #0b1220;
+--card-shadow: 0 14px 28px rgba(0, 0, 0, 0.55);
+--card-shadow-hover: 0 20px 35px rgba(0, 0, 0, 0.7);
+--card-border: rgba(255, 255, 255, 0.08);
+--accent: #60a5fa;
+--accent-strong: #3b82f6;
+--danger: #f87171;
+--control-bg: rgba(15, 23, 42, 0.85);
+--dialog-bg: #0f172a;
+--input-bg: #1f2937;
+}
+
+h1 {
+margin: 0 0 18px;
+font-size: 32px;
+letter-spacing: 1px;
+font-weight: 700;
+color: var(--text-primary);
+text-shadow: 0 6px 14px rgba(15, 23, 42, 0.1);
+}
+
+.section {
+width: min(1200px, 100%);
+margin-bottom: 28px;
+}
+
+.section-title {
+font-size: 20px;
+font-weight: 600;
+color: var(--text-primary);
+margin-bottom: 12px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.section-title::before {
+content: "";
+width: 8px;
+height: 8px;
+border-radius: 999px;
+background: var(--accent);
+box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
 .card-container {
 display: grid;
-grid-template-columns: repeat(6, 1fr);
-gap: 10px;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 16px;
 }
 .card {
 display: flex;
 flex-direction: column;
 position: relative;
-background-color: #a0c9e5;
-padding: 10px;
-border-radius: 10px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+background-color: var(--card-bg);
+padding: 14px;
+border-radius: 16px;
+border: 1px solid var(--card-border);
+box-shadow: var(--card-shadow);
 cursor: grab;
 transition: transform 0.2s ease, box-shadow 0.2s ease;
-width: 200px;
+width: 100%;
 height: auto;
 }
 
@@ -45,6 +115,8 @@ margin-bottom: 5px;
 width: 24px;
 height: 24px;
 margin-right: 10px;
+border-radius: 6px;
+box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12);
 }
 
 .card-title {
@@ -53,7 +125,7 @@ font-weight: bold;
 }
 
 .card-url {
-color: #555;
+color: var(--text-muted);
 font-size: 12px;
 word-break: break-all;
 }
@@ -64,14 +136,14 @@ transform: scale(1.05);
 cursor: grabbing;
 }
 .card:hover {
-transform: translateY(-5px);
-box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+transform: translateY(-6px);
+box-shadow: var(--card-shadow-hover);
 }
 .delete-btn {
 position: absolute;
 top: -10px;
 right: -10px;
-background-color: red;
+background-color: var(--danger);
 color: white;
 border: none;
 border-radius: 50%;
@@ -87,23 +159,47 @@ display: none;
 position: fixed;
 top: 10px;
 right: 10px;
+display: flex;
+align-items: center;
+gap: 8px;
+padding: 10px 12px;
+background: var(--control-bg);
+border-radius: 999px;
+box-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
+backdrop-filter: blur(12px);
 font-size: 60%;
 }
 .admin-controls input {
 padding: 5px;
 font-size: 60%;
+border-radius: 999px;
+border: 1px solid var(--card-border);
+background: var(--input-bg);
+color: var(--text-primary);
+outline: none;
 }
 .admin-controls button {
 padding: 5px 10px;
 font-size: 60%;
 margin-left: 10px;
+border-radius: 999px;
+border: none;
+background: var(--accent);
+color: #fff;
+cursor: pointer;
+transition: transform 0.2s ease, box-shadow 0.2s ease;
+box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+}
+.admin-controls button:hover {
+transform: translateY(-1px);
+box-shadow: 0 10px 18px rgba(37, 99, 235, 0.3);
 }
 .add-remove-controls {
 display: none;
 margin-top: 10px;
 }
 .round-btn {
-background-color: #007bff;
+background: linear-gradient(135deg, var(--accent), var(--accent-strong));
 color: white;
 border: none;
 border-radius: 50%;
@@ -114,12 +210,18 @@ font-size: 24px;
 line-height: 40px;
 cursor: pointer;
 margin: 0 10px;
+box-shadow: 0 10px 20px rgba(37, 99, 235, 0.35);
+transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.round-btn:hover {
+transform: translateY(-2px) scale(1.02);
+box-shadow: 0 14px 28px rgba(37, 99, 235, 0.4);
 }
 #theme-toggle {
 position: fixed;
 bottom: 10px;
 left: 10px;
-background-color: #007bff;
+background: linear-gradient(135deg, var(--accent), var(--accent-strong));
 color: white;
 border: none;
 border-radius: 50%;
@@ -129,6 +231,12 @@ text-align: center;
 font-size: 24px;
 line-height: 40px;
 cursor: pointer;
+box-shadow: 0 10px 20px rgba(37, 99, 235, 0.35);
+transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+#theme-toggle:hover {
+transform: translateY(-2px);
+box-shadow: 0 14px 28px rgba(37, 99, 235, 0.4);
 }
 #dialog-overlay {
 display: none;
@@ -140,12 +248,15 @@ height: 100%;
 background: rgba(0, 0, 0, 0.5);
 justify-content: center;
 align-items: center;
+backdrop-filter: blur(4px);
 }
 #dialog-box {
-background: white;
+background: var(--dialog-bg);
 padding: 20px;
 border-radius: 10px;
 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+color: var(--text-primary);
+width: min(320px, 90vw);
 }
 #dialog-box label {
 display: block;
@@ -155,21 +266,32 @@ margin-bottom: 5px;
 width: 100%;
 padding: 5px;
 margin-bottom: 10px;
+border-radius: 8px;
+border: 1px solid var(--card-border);
+background: var(--input-bg);
+color: var(--text-primary);
+outline: none;
 }
 #dialog-box button {
 padding: 5px 10px;
 margin-right: 10px;
+border-radius: 999px;
+border: none;
+background: var(--accent);
+color: #fff;
+cursor: pointer;
 }
-
-.section {
-margin-bottom: 20px;
+.copyright {
+margin-top: 24px;
+font-size: 12px;
+color: var(--text-muted);
 }
-
-.section-title {
-font-size: 24px;
-font-weight: bold;
-color: #333;
-margin-bottom: 10px;
+.copyright a {
+color: var(--accent);
+text-decoration: none;
+}
+.copyright a:hover {
+text-decoration: underline;
 }
 </style>
 </head>
@@ -323,16 +445,6 @@ event.stopPropagation();
 removeCard(card);
 };
 card.appendChild(deleteBtn);
-
-if (isDarkTheme) {
-card.style.backgroundColor = '#1e1e1e';
-card.style.color = '#ffffff';
-card.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.5)';
-} else {
-card.style.backgroundColor = '#a0c9e5';
-card.style.color = '#333';
-card.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
-}
 
 card.addEventListener('dragstart', dragStart);
 card.addEventListener('dragover', dragOver);
@@ -524,14 +636,7 @@ applyDarkTheme();
 }
 
 function applyDarkTheme() {
-document.body.style.backgroundColor = '#121212';
-document.body.style.color = '#ffffff';
-const cards = document.querySelectorAll('.card');
-cards.forEach(card => {
-card.style.backgroundColor = '#1e1e1e';
-card.style.color = '#ffffff';
-card.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.5)';
-});
+document.body.classList.add('dark');
 }
 
 function showAddDialog() {
@@ -553,33 +658,7 @@ btn.style.display = removeMode ? 'block' : 'none';
 
 function toggleTheme() {
 isDarkTheme = !isDarkTheme;
-// 设置暗色主题和亮色主题的背景色
-document.body.style.backgroundColor = isDarkTheme ? '#121212' : '#d8eac4';
-// 设置暗色主题和亮色主题的文本颜色
-document.body.style.color = isDarkTheme ? '#ffffff' : '#333';
-
-const cards = document.querySelectorAll('.card');
-cards.forEach(card => {
-// 卡片背景和文本颜色设置
-card.style.backgroundColor = isDarkTheme ? '#1e1e1e' : '#a0c9e5';
-card.style.color = isDarkTheme ? '#ffffff' : '#333';
-// 卡片阴影的设置，增强暗色主题的阴影
-card.style.boxShadow = isDarkTheme
-? '0 4px 8px rgba(0, 0, 0, 0.5)'
-: '0 4px 8px rgba(0, 0, 0, 0.1)';
-});
-
-const dialogBox = document.getElementById('dialog-box');
-// 对话框背景和文本颜色设置
-dialogBox.style.backgroundColor = isDarkTheme ? '#1e1e1e' : '#ffffff';
-dialogBox.style.color = isDarkTheme ? '#ffffff' : '#333';
-
-const inputs = dialogBox.querySelectorAll('input, select');
-inputs.forEach(input => {
-// 输入框背景和文本颜色设置
-input.style.backgroundColor = isDarkTheme ? '#333333' : '#ffffff';
-input.style.color = isDarkTheme ? '#ffffff' : '#333';
-});
+document.body.classList.toggle('dark', isDarkTheme);
 }
 
 
@@ -633,4 +712,3 @@ headers: { 'Content-Type': 'application/json' },
 return new Response('Not Found', { status: 404 });
 }
 };
-
